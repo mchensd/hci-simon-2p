@@ -1,4 +1,3 @@
-"""Script for single-gpu/multi-gpu demo."""
 import sys, os
 
 import argparse
@@ -93,7 +92,7 @@ class Application(tornado.web.Application):
 
 class DemoHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html")
+        self.render("index2.html")
 
 
 class TwoDHandler(tornado.websocket.WebSocketHandler):
@@ -178,4 +177,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
