@@ -1,21 +1,28 @@
+// 'web': localhost:4444
+// run.sh: 'command'
 var countDown = 0;
 var player1 = null;
 var player2 = null;
 var paused = false; // for debugging only
 
-var commands = [1]
+var commands = [3]
 var curCommand = null;
 var player1_curX;
 var player1_curY;
 var player1_curZ;
+var player1_left_arm_curX;
 
 var player2_curX;
 var player2_curY;
 var player2_curZ;
+var player2_left_arm_curX;
 
 var slideDist = 500; // 3.5 ft * 304.8 mm / ft
 var warningMsg = 'Simon says: warning: stay social distanced!';
 var cmd1Msg = 'Simon says: Slide to your right';
+var cmd2Msg = 'Simon says: Slide to your left';
+var cmd3Msg = 'Simon says: Hold your left arm out';
+
 function pause() {
   paused = !paused;
   if (paused) {
@@ -96,7 +103,7 @@ var frames = {
       }
     } else if (!(player1 in data.people)) {
       reset();
-    } else if (player2 === null) {
+    } else if (player2 === null) { // detect player 2
       for (var idx of Object.keys(data.people)) {
         if (idx === player1) continue;
         var keypoints = data.people[idx].keypoints
@@ -117,14 +124,19 @@ var frames = {
         }
       }
     }
-    else {
+    else { // both players are detected, display the command if socially distanced
       if (!(player1 in data.people) || !(player2 in data.people)) {
         reset();
       } else {
         var p1X = data.people[player1].avg_position[0];
         var p2X = data.people[player2].avg_position[0];
+        // var p1X_left_arm = data.people[player1].keypoints.LWrist[0];
+        console.log('player1 lwrist:', data.people[player1].keypoints.LWrist);
+        var p1X_left_arm = data.people[player1].keypoints.LWrist[0];  
+        var p2X_left_arm = data.people[player2].keypoints.LWrist[0];
+
         var distFt = Math.abs(p1X - p2X) / 304.8;
-        if (distFt < 3) {
+        if (distFt < 6) {
           $('h2.command').html(warningMsg);
           $('h3.subcmd').html('You are currently ' + distFt + ' feet apart');
           $('h4.p1status').html('');
@@ -163,10 +175,66 @@ var frames = {
             newCommand(data);
           }
         }
+        else if (curCommand == 2) {
+          $('p.debug1').html('p1X: ' + p1X);
+          $('p.debug2').html('p1_curX: ' + player1_curX);
+          $('p.debug3').html('p2X: ' + p2X);
+          $('p.debug4').html('p2_curX: ' + player2_curX);
+
+          $('h2.command').html(cmd2Msg);
+          $('h3.subcmd').html('');
+
+          console.log('p1X, ', p1X);
+          console.log('p1curX', player1_curX);
+          // console.log('p2X, ', p2X);
+          // console.log('p2curX', player2_curX);
+          if (p1X - player1_curX > slideDist) p1Good = true;
+          if (p2X - player2_curX > slideDist) p2Good = true;
+
+          $('h4.p1status').html('Player1 Done: ' + p1Good);
+          $('h4.p2status').html('Player2 Done: ' + p2Good);
+
+          if (p1Good && p2Good) {
+            $('h3.donemsg').html('Complete!');
+            countDown = 15;
+            // await sleep(2000);
+
+            p1Good = false;
+            p2Good = false;
+            newCommand(data);
+          }
+        }
+        else if (curCommand == 3) {
+          
+          $('p.debug1').html('p1X_left_arm: ' + p1X_left_arm);
+          $('p.debug2').html('p1_left_arm_curX: ' + player1_left_arm_curX);
+          $('p.debug3').html('p2X_left_arm: ' + p2X_left_arm);
+          $('p.debug4').html('p2_left_arm_curX: ' + player2_left_arm_curX);
+
+          $('h2.command').html(cmd3Msg);
+          $('h3.subcmd').html('');
+
+          if (p1X_left_arm - player1_left_arm_curX > slideDist) p1Good = true;
+          if (p2X_left_arm - player2_left_arm_curX > slideDist) p2Good = true;
+
+          $('h4.p1status').html('Player1 Done: ' + p1Good);
+          $('h4.p2status').html('Player2 Done: ' + p2Good);
+
+          if (p1Good && p2Good) {
+            $('h3.donemsg').html('Complete!');
+            countDown = 15;
+            // await sleep(2000);
+
+            p1Good = false;
+            p2Good = false;
+            newCommand(data);
+          }
+        }
+
       }
     }
   }
-};
+}
 
 function newCommand(data) {
   curCommand = commands[Math.floor(Math.random() * commands.length)];
@@ -177,10 +245,13 @@ function getPlayerPositions(data) {
   player1_curX = data.people[player1].avg_position[0];
   player1_curY = data.people[player1].avg_position[1];
   player1_curZ = data.people[player1].avg_position[2];
-  
+  player1_left_arm_curX = data.people[player1].keypoints.LWrist[0];
+
   player2_curX = data.people[player2].avg_position[0];
   player2_curY = data.people[player2].avg_position[1];
   player2_curZ = data.people[player2].avg_position[2];
+  player2_left_arm_curX = data.people[player2].keypoints.LWrist[0];
+
   p1Good = false;
   p2Good = false;
 }
