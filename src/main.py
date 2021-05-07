@@ -76,9 +76,9 @@ class Application(tornado.web.Application):
             if self.last_frame is None: break
             FrameHandler.send_updates(self.last_frame)
             TwoDHandler.send_2d(msg)
-            with open(os.path.join(self.args.data_path, f"{ms()}.pkl"), 'wb') as f:
+            # with open(os.path.join(self.args.data_path, f"{ms()}.pkl"), 'wb') as f:
                 # this read should be threadsafe as we have should be threadsafe until the yield
-                pickle.dump({'frame': self.last_frame, 'twod': msg}, f, protocol=pickle.HIGHEST_PROTOCOL)
+                # pickle.dump({'frame': self.last_frame, 'twod': msg}, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     def playback(self):
         with open(self.pkls[self.i], 'rb') as f:

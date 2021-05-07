@@ -5,8 +5,8 @@ var player1 = null;
 var player2 = null;
 var paused = false; // for debugging only
 
-var commands = [3]
-var curCommand = null;
+var commands = [1,2,3]
+var curCommand = 1;
 var player1_curX;
 var player1_curY;
 var player1_curZ;
@@ -73,7 +73,6 @@ var frames = {
 
         p1Good = false;
         p2Good = false;
-        newCommand(data);
       }
       return;
     }
@@ -108,11 +107,13 @@ var frames = {
         if (idx === player1) continue;
         var keypoints = data.people[idx].keypoints
         if (keypoints.RElbow === undefined || keypoints.RWrist === undefined) {
+
           continue;
         }
+        console.log(keypoints.RWrist[1], keypoints.RElbow[1]);
         if (keypoints.RWrist[1] + 100 < keypoints.RElbow[1]) { // wrist is higher than elbow
           player2 = idx;
-          curCommand = commands[Math.floor(Math.random() * commands.length)];
+          curCommand = 3-curCommand;
           getPlayerPositions(data);
 
           $('h3.player2').html('Player2: ready');
@@ -125,23 +126,25 @@ var frames = {
       }
     }
     else { // both players are detected, display the command if socially distanced
+      $('h3.player1').html('');
+          $('h3.player2').html('');
+
       if (!(player1 in data.people) || !(player2 in data.people)) {
         reset();
       } else {
         var p1X = data.people[player1].avg_position[0];
         var p2X = data.people[player2].avg_position[0];
         // var p1X_left_arm = data.people[player1].keypoints.LWrist[0];
-        console.log('player1 lwrist:', data.people[player1].keypoints.LWrist);
         var p1X_left_arm = data.people[player1].keypoints.LWrist[0];  
         var p2X_left_arm = data.people[player2].keypoints.LWrist[0];
 
         var distFt = Math.abs(p1X - p2X) / 304.8;
-        if (distFt < 6) {
+        if (distFt < 5) {
           $('h2.command').html(warningMsg);
           $('h3.subcmd').html('You are currently ' + distFt + ' feet apart');
           $('h4.p1status').html('');
           $('h4.p2status').html('');
-          curCommand = commands[Math.floor(Math.random() * commands.length)];
+          curCommand = 3-curCommand;
           // console.log('curCommand: ', curCommand);
           getPlayerPositions(data);
           return;
@@ -202,7 +205,7 @@ var frames = {
             p1Good = false;
             p2Good = false;
             newCommand(data);
-          }
+         }
         }
         else if (curCommand == 3) {
           
@@ -237,7 +240,7 @@ var frames = {
 }
 
 function newCommand(data) {
-  curCommand = commands[Math.floor(Math.random() * commands.length)];
+  curCommand = 3-curCommand
   getPlayerPositions(data);
 
 }
