@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Preview</title>
+    <!-- <link rel="stylesheet" href="./style.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
     <style>
         * {
           margin: 0;
@@ -21,10 +24,13 @@
           height: 80%;
           margin: 0 auto;
         }
+        .title, .command, .subcmd, .player1, .player2, .donemsg {
+          text-align: center;
+        }
     </style>
   </head>
   <body>
-    <h1>Simon Says, Covid Edition</h1>
+    <h1 class="title">Simon Says, Covid Edition</h1>
     <h3 class="player1"></h3>
     <h3 class="player2"></h3>
     <h2 class="command"></h3>
@@ -38,8 +44,8 @@
     <p class="debug5"></p>
  -->
     <div>
-      <h4 class='p1status' style='float:left'></h4>
-      <h4 class='p2status' style='float:right'></h4>
+      <h4 class='p1status' style='float:left; margin-left: 100px'></h4>
+      <h4 class='p2status' style='float:right; margin-right: 100px'></h4>
     </div>
     <!-- <button style='position:absolute' onclick="pause()" class="pause">Pause</button> -->
     <div class="imgbox">

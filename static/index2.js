@@ -83,7 +83,7 @@ var frames = {
       reset();
     }
     else if (player1 === null) {
-      $('h3.player1').html('Player1: Raise your right hand')
+      $('h3.player1').html('Raise your right hand to be player 1')
       for (var idx of Object.keys(data.people)) {
         var keypoints = data.people[idx].keypoints
         if (keypoints.RElbow === undefined || keypoints.RWrist === undefined) {
@@ -91,8 +91,8 @@ var frames = {
         }
         if (keypoints.RWrist[1] + 100 < keypoints.RElbow[1]) { // wrist is higher than elbow
           player1 = idx;
-          $('h3.player1').html('Player1: ready');
-          $('h3.player2').html('Player2: Raise your right hand');
+          $('h3.player1').html('Player 1: ready');
+          $('h3.player2').html('Raise your right hand to be player 2');
 
           // player1_curX = data.people[idx].avg_position[0];
           // player1_curY = data.people[idx].avg_position[1];
@@ -165,8 +165,13 @@ var frames = {
           if (player1_curX - p1X> slideDist) p1Good = true;
           if (player2_curX - p2X > slideDist) p2Good = true;
 
-          $('h4.p1status').html('Player1 Done: ' + p1Good);
-          $('h4.p2status').html('Player2 Done: ' + p2Good);
+          var p1Msg = "Incomplete";
+          var p2Msg = 'Incomplete';
+          if (p1Good) p1Msg = 'Complete!';
+          if (p2Good) p2Msg = 'Complete!';
+
+          $('h4.p1status').html('Player 1: ' + p1Msg);
+          $('h4.p2status').html('Player 2: ' + p2Msg);
 
           if (p1Good && p2Good) {
             $('h3.donemsg').html('Complete!');
@@ -194,8 +199,13 @@ var frames = {
           if (p1X - player1_curX > slideDist) p1Good = true;
           if (p2X - player2_curX > slideDist) p2Good = true;
 
-          $('h4.p1status').html('Player1 Done: ' + p1Good);
-          $('h4.p2status').html('Player2 Done: ' + p2Good);
+          var p1Msg = "Incomplete";
+          var p2Msg = 'Incomplete';
+          if (p1Good) p1Msg = 'Complete!';
+          if (p2Good) p2Msg = 'Complete!';
+
+          $('h4.p1status').html('Player 1: ' + p1Msg);
+          $('h4.p2status').html('Player 2: ' + p2Msg);
 
           if (p1Good && p2Good) {
             $('h3.donemsg').html('Complete!');
@@ -259,7 +269,7 @@ function getPlayerPositions(data) {
   p2Good = false;
 }
 function reset() {
-  $('h3.player1').html('Player1: Raise your right hand');
+  $('h3.player1').html('Raise your right hand to be player 1');
   $('h3.player2').html('');
   $('h2.command').html('');
   $('h3.subcmd').html('');
